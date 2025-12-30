@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang='ja'>
+<head>
+  <meta charset='UTF-8' />
+  <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+  <meta name='robots' content='noindex,nofollow' />
+  <title>コミュニティ 入口</title>
+  <script src='https://cdn.tailwindcss.com'></script>
+</head>
+
+<body class='bg-slate-50 text-slate-800'>
+  <header class='bg-white border-b border-slate-200 sticky top-0 z-10'>
+    <div class='max-w-6xl mx-auto px-4 py-3 flex items-center justify-between'>
+      <div class='font-bold text-lg'>コミュニティプロトタイプ</div>
+
+      <div class='flex items-center gap-2'>
+        <div class='text-xs text-slate-600' data-role-badge>現在の表示 未選択</div>
+        <button class='text-xs px-3 py-2 rounded-lg bg-slate-900 text-white' data-role-change>ログイン</button>
+        <button class='text-xs px-3 py-2 rounded-lg bg-white border border-slate-200' data-role-clear>解除</button>
+      </div>
+    </div>
+  </header>
+
+  <main class='max-w-6xl mx-auto px-4 py-10'>
+    <section class='bg-white border border-slate-200 rounded-2xl p-6 md:p-10 shadow-sm'>
+      <div class='inline-flex items-center gap-2 text-xs font-bold bg-rose-50 text-rose-700 px-3 py-1 rounded-full border border-rose-100 mb-4'>
+        誰かの支えになりたい人向け
+      </div>
+
+      <h1 class='text-2xl md:text-3xl font-bold leading-tight mb-3'>
+        支援の前提をそろえて、継続学習へ進む
+      </h1>
+
+      <p class='text-slate-600 mb-6'>
+        検定を受けると、修了証と、支援者向けツールや継続学習ページの利用権限が付く想定です。
+      </p>
+
+      <!-- 追加：次にやること -->
+      <div class='mb-8'>
+        <div class='bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700'>
+          次にやること：
+          <a id='nextActionLink' href='login.html' class='font-bold underline'>ログイン</a>
+          <span id='nextActionText' class='text-slate-600'></span>
+        </div>
+      </div>
+
+      <div class='grid md:grid-cols-2 gap-4 mb-10'>
+        <a href='s_kentei.html' class='block bg-rose-700 hover:bg-rose-800 text-white rounded-xl p-5'>
+          <div class='font-bold text-lg mb-1'>検定へ</div>
+          <div class='text-sm opacity-90'>動画 視聴 テスト 修了証</div>
+        </a>
+
+        <a href='#eventsBlock' class='block bg-sky-600 hover:bg-sky-700 text-white rounded-xl p-5'>
+          <div class='font-bold text-lg mb-1'>イベントを見る</div>
+          <div class='text-sm opacity-90'>下に一覧があります</div>
+        </a>
+      </div>
+
+      <div class='flex items-center justify-between mb-4'>
+        <div>
+          <h2 class='text-xl font-bold'>利用できるコンテンツ</h2>
+          <p class='text-sm text-slate-600 mt-1'>ロールに応じて自動で表示します</p>
+        </div>
+        <div class='flex gap-2'>
+          <a id='openLibraryBtn' href='s_library.html' class='text-sm font-bold px-4 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-50'>
+            もっと見る
+          </a>
+          <a href='rp_info.html' data-min-role='RP' class='text-sm font-bold px-4 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-50'>
+            RP案内
+          </a>
+        </div>
+      </div>
+
+      <div id='topContents' class='grid md:grid-cols-2 gap-4'></div>
+
+      <div class='mt-10 text-xs text-slate-500'>
+        B無料会員はオウンドメディア側で管理する前提のため、このプロトタイプでは扱いません。
+      </div>
+    </section>
+
+    <section id='eventsBlock' class='mt-10'>
+      <div class='flex items-center justify-between mb-4'>
+        <div>
+          <h2 class='text-xl font-bold'>イベント</h2>
+          <p class='text-sm text-slate-600 mt-1'>権限不足のものはグレー表示になります</p>
+        </div>
+        <a href='events.html' class='text-sm text-slate-600 hover:text-slate-900 underline'>一覧ページへ</a>
+      </div>
+
+      <div id='topEvents' class='grid md:grid-cols-2 gap-6'></div>
+    </section>
+  </main>
+
+  <script src='data/contents.js'></script>
+  <script src='data/events.js'></script>
+  <script src='app.js'></script>
+
+  <script>
+    ;(() => {
+      const ROLE_RANK = { NONE: 0, S: 1, P: 2, RP: 3 }
+      const role = (window.ProtoAuth && ProtoAuth.getRole && ProtoAuth.getRole()) ? ProtoAuth.getRole() : 'NONE'
+
+      const hasAccess = (minRole) => (ROLE_RANK[role] || 0) >= (ROLE_RANK[minRole] || 0)
+
+      const laneMinRole = lane => {
+        if (lane === 'S') return 'S'
+        if (lane === 'P') return 'P'
+        if (lane === 'RP') return 'RP'
+        return 'S'
+      }
+
+      const openLibraryBtn = document.getElementById('openLibraryBtn')
+      if (openLibraryBtn) {
+        openLibraryBtn.href = hasAccess('P') ? 'p_library.html' : 's_library.html'
+      }
+
+      // 追加：次にやること（ロール連動）
+      const nextActionLink = document.getElementById('nextActionLink')
+      const nextActionText = document.getElementById('nextActionText')
+
+      if (nextActionLink && nextActionText) {
+        if (role === 'NONE') {
+          nextActionLink.textContent = 'ログイン'
+          nextActionLink.href = 'login.html'
+          nextActionText.textContent = 'して、利用できるコンテンツを表示します'
+        } else if (role === 'S') {
+          nextActionLink.textContent = 'S 継続学習とツールへ'
+          nextActionLink.href = 's_library.html'
+          nextActionText.textContent = 'を開いて学習を進めます'
+        } else if (role === 'P') {
+          nextActionLink.textContent = 'P プロ向けへ'
+          nextActionLink.href = 'p_library.html'
+          nextActionText.textContent = 'を開いて実務コンテンツを確認します'
+        } else if (role === 'RP') {
+          nextActionLink.textContent = 'RP 案内へ'
+          nextActionLink.href = 'rp_info.html'
+          nextActionText.textContent = 'を確認してロールプレイに進みます'
+        }
+      }
+
+      const contents = window.PROTO_CONTENTS || []
+      const topContents = document.getElementById('topContents')
+
+      const visibleContents = contents
+        .filter(c => hasAccess(laneMinRole(c.lane)))
+        .sort((a, b) => (b.updated || '').localeCompare(a.updated || ''))
+        .slice(0, 4)
+
+      topContents.innerHTML = ''
+      visibleContents.forEach(c => {
+        const card = document.createElement('div')
+        card.className = 'bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex items-center justify-between gap-4'
+
+        const left = document.createElement('div')
+        const title = document.createElement('div')
+        title.className = 'text-lg font-bold'
+        title.textContent = c.title
+
+        const meta = document.createElement('div')
+        meta.className = 'text-sm text-slate-600 mt-1'
+        meta.textContent = (c.type === 'video' ? '動画' : '資料') + ' ・ ' + (c.minutes || 0) + '分 ・ 更新 ' + (c.updated || '')
+
+        const tags = document.createElement('div')
+        tags.className = 'flex flex-wrap gap-2 mt-3'
+        ;(c.tags || []).slice(0, 3).forEach(t => {
+          const pill = document.createElement('span')
+          pill.className = 'text-xs px-3 py-1 rounded-full border border-slate-200 bg-slate-50'
+          pill.textContent = t
+          tags.appendChild(pill)
+        })
+
+        left.appendChild(title)
+        left.appendChild(meta)
+        left.appendChild(tags)
+
+        const btn = document.createElement('a')
+        btn.href = c.url || '#'
+        btn.target = '_blank'
+        btn.className = 'shrink-0 bg-sky-600 hover:bg-sky-700 text-white font-bold px-6 py-3 rounded-xl'
+        btn.textContent = '開く'
+
+        card.appendChild(left)
+        card.appendChild(btn)
+        topContents.appendChild(card)
+      })
+
+      const events = window.PROTO_EVENTS || []
+      const topEvents = document.getElementById('topEvents')
+
+      const list = events
+        .slice()
+        .sort((a, b) => (a.date + ' ' + a.time).localeCompare(b.date + ' ' + b.time))
+        .slice(0, 6)
+
+      topEvents.innerHTML = ''
+      list.forEach(e => {
+        const minRole = laneMinRole(e.lane)
+        const ok = hasAccess(minRole)
+
+        const wrap = document.createElement('div')
+        wrap.className = 'bg-white border border-slate-200 rounded-2xl p-6 shadow-sm'
+
+        const top = document.createElement('div')
+        top.className = 'text-sm text-slate-500 mb-2'
+        top.textContent = e.date + ' ' + e.time + ' ・ ' + e.lane
+
+        const title = document.createElement('div')
+        title.className = 'text-xl font-bold mb-2'
+        title.textContent = e.title
+
+        const ov = document.createElement('div')
+        ov.className = 'text-slate-600 mb-5'
+        ov.textContent = e.overview || ''
+
+        const actions = document.createElement('div')
+        actions.className = 'grid grid-cols-2 gap-3 items-center'
+
+        const join = document.createElement('a')
+        join.href = e.join_url || '#'
+        join.target = '_blank'
+        join.className = 'text-center font-bold py-3 rounded-xl border border-slate-200'
+        join.textContent = '参加'
+
+        const q = document.createElement('a')
+        q.href = e.question_url || '#'
+        q.target = '_blank'
+        q.className = 'text-center font-bold py-3 rounded-xl border border-slate-200 bg-white'
+        q.textContent = '質問'
+
+        if (ok) {
+          join.classList.add('bg-sky-600', 'text-white', 'border-transparent')
+        } else {
+          wrap.classList.add('opacity-40')
+          join.classList.add('pointer-events-none')
+          q.classList.add('pointer-events-none')
+        }
+
+        const note = document.createElement('div')
+        note.className = 'text-xs text-slate-500 mt-4'
+        note.textContent = ok ? '' : ('必要権限 ' + minRole + ' 以上')
+
+        actions.appendChild(join)
+        actions.appendChild(q)
+
+        wrap.appendChild(top)
+        wrap.appendChild(title)
+        wrap.appendChild(ov)
+        wrap.appendChild(actions)
+        wrap.appendChild(note)
+
+        topEvents.appendChild(wrap)
+      })
+    })()
+  </script>
+</body>
+</html>

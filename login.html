@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang='ja'>
+<head>
+  <meta charset='UTF-8' />
+  <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+  <title>ログイン（プロトタイプ）</title>
+  <script src='https://cdn.tailwindcss.com'></script>
+</head>
+
+<body class='bg-slate-50 text-slate-800'>
+  <header class='bg-white border-b border-slate-200 sticky top-0 z-10'>
+    <div class='max-w-4xl mx-auto px-4 py-3 flex items-center justify-between'>
+      <div class='font-bold text-lg'>ログイン（プロトタイプ）</div>
+      <a href='index.html' class='text-sm text-slate-600 hover:text-slate-900 underline'>戻る</a>
+    </div>
+  </header>
+
+  <main class='max-w-4xl mx-auto px-4 py-10'>
+    <section class='bg-white border border-slate-200 rounded-2xl p-6 md:p-10 shadow-sm'>
+      <h1 class='text-2xl font-bold mb-2'>役割を選択</h1>
+      <p class='text-slate-600 mb-8'>本番ではオウンドメディア側の会員情報で自動決定される想定です。</p>
+
+      <div class='grid md:grid-cols-3 gap-4'>
+        <button data-set-role='S' class='text-left bg-white border border-slate-200 rounded-2xl p-6 hover:shadow'>
+          <div class='text-xs font-bold text-slate-500 mb-2'>S</div>
+          <div class='text-lg font-bold mb-1'>サポーター</div>
+          <div class='text-sm text-slate-600'>支援の前提・ツール・継続学習</div>
+        </button>
+
+        <button data-set-role='P' class='text-left bg-white border border-slate-200 rounded-2xl p-6 hover:shadow'>
+          <div class='text-xs font-bold text-slate-500 mb-2'>P</div>
+          <div class='text-lg font-bold mb-1'>プロ</div>
+          <div class='text-sm text-slate-600'>実務コンテンツ・運用の型</div>
+        </button>
+
+        <button data-set-role='RP' class='text-left bg-white border border-slate-200 rounded-2xl p-6 hover:shadow'>
+          <div class='text-xs font-bold text-slate-500 mb-2'>RP</div>
+          <div class='text-lg font-bold mb-1'>ロールプレイ</div>
+          <div class='text-sm text-slate-600'>RP枠の利用（P/Sを内包）</div>
+        </button>
+      </div>
+
+      <div class='mt-8 flex items-center gap-3'>
+        <button id='goIndex' class='px-5 py-3 rounded-xl bg-slate-900 text-white font-bold'>入口へ</button>
+        <button id='clear' class='px-5 py-3 rounded-xl bg-white border border-slate-200 font-bold'>解除</button>
+      </div>
+    </section>
+  </main>
+
+  <script src='app.js'></script>
+  <script>
+    document.querySelectorAll('[data-set-role]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const role = btn.getAttribute('data-set-role')
+        window.ProtoAuth.setRole(role)
+        location.href = 'index.html'
+      })
+    })
+    document.getElementById('goIndex').addEventListener('click', () => {
+      location.href = 'index.html'
+    })
+    document.getElementById('clear').addEventListener('click', () => {
+      window.ProtoAuth.clearRole()
+      location.href = 'index.html'
+    })
+  </script>
+</body>
+</html>

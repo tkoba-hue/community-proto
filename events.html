@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang='ja'>
+<head>
+  <meta charset='UTF-8' />
+  <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+  <title>イベント一覧</title>
+  <script src='https://cdn.tailwindcss.com'></script>
+</head>
+
+<body class='bg-slate-50 text-slate-800'>
+  <header class='bg-white border-b border-slate-200 sticky top-0 z-10'>
+    <div class='max-w-6xl mx-auto px-4 py-3 flex items-center justify-between'>
+      <div class='font-bold text-lg'>イベント一覧</div>
+
+      <div class='flex items-center gap-2'>
+        <div class='text-xs text-slate-600' data-role-badge>現在の表示 未選択</div>
+        <button class='text-xs px-3 py-2 rounded-lg bg-slate-900 text-white' data-role-change>役割変更</button>
+        <button class='text-xs px-3 py-2 rounded-lg bg-white border border-slate-200' data-role-clear>解除</button>
+      </div>
+    </div>
+  </header>
+
+  <main class='max-w-6xl mx-auto px-4 py-10'>
+    <div class='flex items-center justify-between mb-6'>
+      <div>
+        <h1 class='text-2xl font-bold'>イベント</h1>
+        <p class='text-sm text-slate-600 mt-1'>権限不足のイベントはグレー表示になります</p>
+      </div>
+      <a href='index.html' class='text-sm text-slate-600 hover:text-slate-900 underline'>入口に戻る</a>
+    </div>
+
+    <div class='flex gap-2 mb-8'>
+      <button class='px-4 py-2 rounded-full border border-slate-200 bg-slate-900 text-white text-sm font-bold' data-filter='ALL'>全部</button>
+      <button class='px-4 py-2 rounded-full border border-slate-200 bg-white text-sm font-bold' data-filter='S'>S</button>
+      <button class='px-4 py-2 rounded-full border border-slate-200 bg-white text-sm font-bold' data-filter='P' data-min-role='P'>P</button>
+      <button class='px-4 py-2 rounded-full border border-slate-200 bg-white text-sm font-bold' data-filter='RP' data-min-role='RP'>RP</button>
+    </div>
+
+    <div id='eventsGrid' class='grid md:grid-cols-2 gap-6'></div>
+  </main>
+
+  <script src='data/events.js'></script>
+  <script src='app.js'></script>
+
+  <script>
+    ;(() => {
+      const ROLE_RANK = { NONE: 0, S: 1, P: 2, RP: 3 }
+      const laneMinRole = lane => {
+        if (lane === 'S') return 'S'
+        if (lane === 'P') return 'P'
+        if (lane === 'RP') return 'RP'
+        return 'S'
+      }
+      const hasAccess = (role, minRole) => (ROLE_RANK[role] || 0) >= (ROLE_RANK[minRole] || 0)
+
+      const role = (window.ProtoAuth && ProtoAuth.getRole && ProtoAuth.getRole()) ? ProtoAuth.getRole() : 'NONE'
+      const events = window.PROTO_EVENTS || []
+      const grid = document.getElementById('eventsGrid')
+
+      let currentFilter = 'ALL'
+
+      function pillActive(btn, on) {
+        if (on) {
+          btn.classList.add('bg-slate-900', 'text-white')
+          btn.classList.remove('bg-white')
+        } else {
+          btn.classList.remove('bg-slate-900', 'text-white')
+          btn.classList.add('bg-white')
+        }
+      }
+
+      function render() {
+        grid.innerHTML = ''
+
+        const list = events
+          .filter(e => currentFilter === 'ALL' ? true : e.lane === currentFilter)
+          .sort((a, b) => (a.date + ' ' + a.time).localeCompare(b.date + ' ' + b.time))
+
+        list.forEach(e => {
+          const minRole = laneMinRole(e.lane)
+          const ok = hasAccess(role, minRole)
+
+          const wrap = document.createElement('div')
+          wrap.className = 'bg-white border border-slate-200 rounded-2xl p-6 shadow-sm'
+
+          const top = document.createElement('div')
+          top.className = 'text-sm text-slate-500 mb-2'
+          top.textContent = e.date + ' ' + e.time + ' ・ ' + e.lane
+
+          const title = document.createElement('div')
+          title.className = 'text-xl font-bold mb-2'
+          title.textContent = e.title
+
+          const ov = document.createElement('div')
+          ov.className = 'text-slate-600 mb-5'
+          ov.textContent = e.overview || ''
+
+          const actions = document.createElement('div')
+          actions.className = 'grid grid-cols-2 gap-3 items-center'
+
+          const join = document.createElement('a')
+          join.href = e.join_url || '#'
+          join.target = '_blank'
+          join.className = 'text-center font-bold py-3 rounded-xl border border-slate-200'
+          join.textContent = '参加'
+
+          const q = document.createElement('a')
+          q.href = e.question_url || '#'
+          q.target = '_blank'
+          q.className = 'text-center font-bold py-3 rounded-xl border border-slate-200 bg-white'
+          q.textContent = '質問'
+
+          if (ok) {
+            join.classList.add('bg-sky-600', 'text-white', 'border-transparent')
+          } else {
+            wrap.classList.add('opacity-40')
+            join.classList.add('pointer-events-none')
+            q.classList.add('pointer-events-none')
+          }
+
+          const note = document.createElement('div')
+          note.className = 'text-xs text-slate-500 mt-4'
+          note.textContent = ok ? '' : ('必要権限 ' + minRole + ' 以上')
+
+          actions.appendChild(join)
+          actions.appendChild(q)
+
+          wrap.appendChild(top)
+          wrap.appendChild(title)
+          wrap.appendChild(ov)
+          wrap.appendChild(actions)
+          wrap.appendChild(note)
+
+          grid.appendChild(wrap)
+        })
+      }
+
+      document.querySelectorAll('[data-filter]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentFilter = btn.getAttribute('data-filter')
+          document.querySelectorAll('[data-filter]').forEach(b => pillActive(b, b === btn))
+          render()
+        })
+      })
+
+      render()
+    })()
+  </script>
+</body>
+</html>

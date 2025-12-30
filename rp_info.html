@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang='ja'>
+<head>
+  <meta charset='UTF-8' />
+  <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+  <title>RP 案内</title>
+  <script src='https://cdn.tailwindcss.com'></script>
+</head>
+
+<body class='bg-slate-50 text-slate-800' data-require-role='RP'>
+  <header class='bg-white border-b border-slate-200 sticky top-0 z-10'>
+    <div class='max-w-5xl mx-auto px-4 py-3 flex items-center justify-between'>
+      <a href='index.html' class='font-bold'>RP ロールプレイ</a>
+      <div class='flex items-center gap-2'>
+        <div class='text-xs text-slate-600' data-role-badge></div>
+        <button class='text-xs px-3 py-2 rounded-lg bg-slate-900 text-white' data-role-change>役割変更</button>
+        <button class='text-xs px-3 py-2 rounded-lg bg-white border border-slate-200' data-role-clear>解除</button>
+      </div>
+    </div>
+  </header>
+
+  <main class='max-w-5xl mx-auto px-4 py-8'>
+    <section class='bg-white border border-slate-200 rounded-2xl p-6'>
+      <h1 class='text-xl font-bold mb-2'>RPでやること</h1>
+      <ul class='text-sm text-slate-600 list-disc pl-5 space-y-1'>
+        <li>事前にテーマを決める</li>
+        <li>当日は時間内で模擬面談</li>
+        <li>終了後にフィードバック</li>
+      </ul>
+
+      <div class='mt-6 grid md:grid-cols-2 gap-3'>
+        <a class='block bg-sky-600 text-white font-bold text-center py-3 rounded-xl' href='events.html'>RP枠を見る</a>
+        <a class='block bg-white border border-slate-200 font-bold text-center py-3 rounded-xl' href='https://example.com' target='_blank' rel='noreferrer'>予約ページ ダミー</a>
+      </div>
+    </section>
+  </main>
+
+  <script src='app.js'></script>
+</body>
+</html>

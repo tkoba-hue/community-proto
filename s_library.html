@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang='ja'>
+<head>
+  <meta charset='UTF-8' />
+  <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+  <title>S 棚</title>
+  <script src='https://cdn.tailwindcss.com'></script>
+</head>
+
+<body class='bg-slate-50 text-slate-800' data-require-role='S'>
+  <header class='bg-white border-b border-slate-200 sticky top-0 z-10'>
+    <div class='max-w-5xl mx-auto px-4 py-3 flex items-center justify-between'>
+      <a href='index.html' class='font-bold'>S 継続学習とツール</a>
+      <div class='flex items-center gap-2'>
+        <div class='text-xs text-slate-600' data-role-badge></div>
+        <button class='text-xs px-3 py-2 rounded-lg bg-slate-900 text-white' data-role-change>役割変更</button>
+        <button class='text-xs px-3 py-2 rounded-lg bg-white border border-slate-200' data-role-clear>解除</button>
+      </div>
+    </div>
+  </header>
+
+  <main class='max-w-5xl mx-auto px-4 py-8'>
+    <div class='bg-white border border-slate-200 rounded-2xl p-5 mb-6'>
+      <div class='font-bold mb-1'>ここでできること</div>
+      <div class='text-sm text-slate-600'>支援者向けのツールと継続学習コンテンツを利用する想定です</div>
+    </div>
+
+    <div id='list' class='grid md:grid-cols-2 gap-4'></div>
+  </main>
+
+  <script src='app.js'></script>
+  <script src='data/contents.js'></script>
+  <script>
+    function typeLabel(t) {
+      if (t === 'video') return '動画'
+      if (t === 'doc') return '資料'
+      return 'その他'
+    }
+
+    function card(item) {
+      const tags = (item.tags || []).map(tag => {
+        return '<span class=\'text-[11px] px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200\'>' + tag + '</span>'
+      }).join(' ')
+
+      return (
+        '<div class=\'bg-white border border-slate-200 rounded-2xl p-5 hover:shadow-sm\'>'
+        + '<div class=\'flex items-start justify-between gap-3\'>'
+        +   '<div>'
+        +     '<div class=\'font-bold text-lg leading-snug\'>' + item.title + '</div>'
+        +     '<div class=\'text-xs text-slate-500 mt-1\'>' + typeLabel(item.type) + ' ・ ' + item.minutes + '分 ・ 更新 ' + item.updated + '</div>'
+        +   '</div>'
+        +   '<a class=\'text-sm font-bold px-4 py-2 rounded-xl bg-sky-600 text-white shrink-0\' href=\'' + item.url + '\' target=\'_blank\' rel=\'noreferrer\'>開く</a>'
+        + '</div>'
+        + '<div class=\'mt-3 flex flex-wrap gap-2\'>' + tags + '</div>'
+        + '</div>'
+      )
+    }
+
+    const list = document.getElementById('list')
+    const items = (window.PROTO_CONTENTS || []).filter(x => x.lane === 'S')
+    list.innerHTML = items.map(card).join('')
+  </script>
+</body>
+</html>

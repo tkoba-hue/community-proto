@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>両立支援検定 | お申し込み</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#be123c', // rose-700 エンジ色
+                        secondary: '#0ea5e9', // sky-500 水色
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .spinner { border: 3px solid rgba(255,255,255,0.3); width: 20px; height: 20px; border-radius: 50%; border-left-color: #fff; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .video-responsive {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            width: 100%;
+            background-color: #000;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .video-responsive iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- ヘッダー -->
+    <nav class="bg-white border-b border-gray-200 shadow-sm z-50 sticky top-0">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="goToScreen('lpScreen')">
+                <img src="https://placehold.co/180x45/ffffff/be123c?text=ChangeWAVE+Group&font=roboto" alt="ChangeWAVE Group" class="h-10 w-auto object-contain">
+                <div class="hidden md:block h-8 w-px bg-gray-300 mx-2"></div>
+                <h1 class="text-lg font-bold text-slate-700 hidden md:block">
+                    両立支援検定 
+                    <span class="text-[10px] font-normal bg-slate-100 text-slate-500 px-2 py-0.5 rounded border border-slate-200 ml-1">Prototype</span>
+                </h1>
+            </div>
+            
+            <div id="authButtons">
+                <button onclick="goToScreen('loginScreen')" class="text-sm font-bold text-slate-600 hover:text-primary flex items-center transition">
+                    <i class="fas fa-sign-in-alt mr-2"></i> ログイン
+                </button>
+            </div>
+            <div id="userInfo" class="text-sm hidden flex items-center gap-4">
+                <div class="text-right leading-tight hidden sm:block">
+                    <span class="block text-[10px] text-slate-400">ログイン中</span>
+                    <span id="userName" class="font-bold text-slate-700"></span>
+                </div>
+                <button onclick="logout()" class="bg-slate-100 text-slate-600 px-4 py-1.5 rounded-full hover:bg-slate-200 transition text-xs font-bold border border-slate-200">ログアウト</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツエリア -->
+    <main class="flex-grow">
+
+        <!-- 1. LP画面 (文言を元に戻しました) -->
+        <div id="lpScreen" class="fade-in">
+            <div class="bg-rose-50 py-16 border-b border-rose-100">
+                <div class="container mx-auto px-4 text-center max-w-3xl">
+                    <span class="bg-rose-100 text-primary px-3 py-1 rounded-full text-xs font-bold mb-4 inline-block">オンライン完結</span>
+                    <h1 class="text-3xl md:text-4xl font-bold mb-6 leading-tight text-gray-800">
+                        あなたのキャリアと<br>大切な家族を守る知識を。
+                    </h1>
+                    <p class="text-gray-600 mb-8 leading-relaxed">
+                        「仕事と介護の両立検定」は、介護離職を防ぎ、<br class="hidden md:inline">
+                        働きながら介護を続けるための基礎知識を学ぶ検定です。
+                    </p>
+                    
+                    <!-- 商品カード -->
+                    <div class="bg-white p-8 rounded-2xl shadow-xl border border-gray-200 max-w-lg mx-auto transform transition hover:-translate-y-1">
+                        <h2 class="text-xl font-bold text-gray-800 mb-2">ベーシック検定</h2>
+                        <div class="flex justify-center items-end space-x-2 mb-6">
+                            <span class="text-4xl font-bold text-primary">¥1,800</span>
+                            <span class="text-sm text-gray-400 mb-1">/ 税込</span>
+                        </div>
+                        
+                        <div class="space-y-3 mb-8 text-left text-sm text-gray-600 px-4">
+                            <p class="flex items-center"><i class="fas fa-check-circle text-emerald-500 mr-2"></i> オンライン動画講義（約60分）</p>
+                            <p class="flex items-center"><i class="fas fa-check-circle text-emerald-500 mr-2"></i> 確認テスト（何度でも挑戦可）</p>
+                            <p class="flex items-center"><i class="fas fa-check-circle text-emerald-500 mr-2"></i> デジタル修了証の発行</p>
+                        </div>
+
+                        <!-- アクションボタン -->
+                        <div class="space-y-3">
+                            <button onclick="startIndividualFlow()" class="w-full bg-primary hover:bg-rose-800 text-white font-bold py-3 rounded-lg shadow-md transition flex items-center justify-center">
+                                <i class="fas fa-user mr-2"></i> 個人で申し込む
+                            </button>
+                            <button onclick="goToScreen('corporateFlow')" class="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-bold py-3 rounded-lg transition flex items-center justify-center text-sm">
+                                <i class="fas fa-building mr-2"></i> 法人・団体の方はこちら (割引あり)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 個人申し込みフロー -->
+        <div id="registrationFlow" class="hidden container mx-auto max-w-md mt-10 p-4">
+            <div class="flex justify-between mb-8 px-4">
+                <span class="text-xs font-bold text-primary">1. アカウント</span>
+                <span class="text-xs font-bold text-gray-400" id="stepLabel2">2. お支払い</span>
+                <span class="text-xs font-bold text-gray-400" id="stepLabel3">3. 完了</span>
+            </div>
+
+            <!-- STEP 1 -->
+            <div id="step1-account" class="bg-white p-6 rounded-xl shadow-lg fade-in">
+                <h2 class="text-lg font-bold mb-4">アカウント作成</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">お名前</label>
+                        <input type="text" id="regName" class="w-full border border-gray-300 px-3 py-2 rounded focus:ring-2 focus:ring-primary outline-none" placeholder="山田 太郎">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">メールアドレス</label>
+                        <input type="email" id="regEmail" class="w-full border border-gray-300 px-3 py-2 rounded focus:ring-2 focus:ring-primary outline-none" placeholder="taro@example.com">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">パスワード設定</label>
+                        <input type="password" id="regPass" class="w-full border border-gray-300 px-3 py-2 rounded focus:ring-2 focus:ring-primary outline-none" placeholder="8文字以上">
+                    </div>
+                    <button onclick="toPaymentStep()" class="w-full bg-primary hover:bg-rose-800 text-white font-bold py-3 rounded-lg mt-2">
+                        次へ進む
+                    </button>
+                    <button onclick="goToScreen('lpScreen')" class="w-full text-center text-gray-400 text-xs mt-4">キャンセル</button>
+                </div>
+            </div>
+
+            <!-- STEP 2 -->
+            <div id="step2-payment" class="hidden bg-white p-6 rounded-xl shadow-lg fade-in">
+                <div class="flex justify-between items-center mb-6 border-b pb-4">
+                    <span class="text-sm font-bold text-gray-600">ご請求額</span>
+                    <span class="text-xl font-bold text-gray-800">¥1,800</span>
+                </div>
+                <h2 class="text-sm font-bold mb-3 text-gray-700">クレジットカード情報</h2>
+                <div class="space-y-4">
+                    <div class="relative">
+                        <input type="text" class="w-full border border-gray-300 px-3 py-2 pl-10 rounded focus:ring-2 focus:ring-secondary outline-none" placeholder="カード番号">
+                        <i class="fas fa-credit-card absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" class="border border-gray-300 px-3 py-2 rounded focus:ring-2 focus:ring-secondary outline-none" placeholder="MM / YY">
+                        <input type="text" class="border border-gray-300 px-3 py-2 rounded focus:ring-2 focus:ring-secondary outline-none" placeholder="CVC">
+                    </div>
+                    <button onclick="executePayment()" class="w-full bg-primary hover:bg-rose-800 text-white font-bold py-3 rounded-lg mt-4 flex justify-center items-center">
+                        <span id="payBtnText">¥1,800 を支払う</span>
+                        <div id="paySpinner" class="spinner hidden"></div>
+                    </button>
+                </div>
+                <button onclick="backToAccount()" class="w-full text-center text-gray-400 text-xs mt-4">戻る</button>
+            </div>
+
+            <!-- STEP 3 -->
+            <div id="step3-complete" class="hidden bg-white p-8 rounded-xl shadow-lg text-center fade-in">
+                <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check text-3xl text-emerald-500"></i>
+                </div>
+                <h2 class="text-xl font-bold mb-2">登録完了</h2>
+                <p class="text-sm text-gray-600 mb-6">
+                    お支払いが完了し、<br>アカウントが発行されました。
+                </p>
+                <div class="bg-gray-50 p-4 rounded text-left text-sm mb-6">
+                    <p class="text-gray-500">発行ID (メールアドレス)</p>
+                    <p class="font-bold text-lg" id="issuedEmail">user@example.com</p>
+                </div>
+                <button onclick="goToDashboardFromRegister()" class="w-full bg-secondary hover:bg-sky-600 text-white font-bold py-3 rounded-lg shadow animate-pulse">
+                    ログインして受講を開始する
+                </button>
+            </div>
+        </div>
+
+        <!-- 3. 法人問い合わせ -->
+        <div id="corporateFlow" class="hidden container mx-auto max-w-lg mt-10 p-6 bg-white rounded-xl shadow-lg fade-in">
+            <h2 class="text-xl font-bold mb-2"><i class="fas fa-building text-gray-400 mr-2"></i>法人・団体申し込み</h2>
+            <p class="text-sm text-gray-500 mb-6">5名以上でのご利用は請求書払いが可能です。</p>
+            <div class="space-y-4">
+                <input type="text" class="w-full border border-gray-300 px-3 py-2 rounded" placeholder="貴社名">
+                <input type="text" class="w-full border border-gray-300 px-3 py-2 rounded" placeholder="担当者名">
+                <input type="email" class="w-full border border-gray-300 px-3 py-2 rounded" placeholder="メールアドレス">
+                <select class="w-full border border-gray-300 px-3 py-2 rounded">
+                    <option>受験予定人数を選択</option>
+                    <option>5〜10名</option>
+                    <option>11〜50名 (5%OFF)</option>
+                    <option>51名以上 (10%OFF)</option>
+                </select>
+                <button onclick="alert('送信しました。担当者より連絡いたします。'); goToScreen('lpScreen');" class="w-full bg-slate-800 text-white font-bold py-3 rounded-lg">問い合わせを送信</button>
+            </div>
+            <button onclick="goToScreen('lpScreen')" class="w-full text-center text-gray-400 text-xs mt-4">戻る</button>
+        </div>
+
+        <!-- 4. ログイン画面 -->
+        <div id="loginScreen" class="hidden container mx-auto max-w-sm mt-16 p-6 bg-white rounded-xl shadow-lg fade-in border border-gray-200">
+            <h2 class="text-xl font-bold mb-6 text-center text-gray-800">ログイン</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">メールアドレス</label>
+                    <input type="email" id="loginEmail" class="w-full border border-gray-300 px-3 py-2 rounded focus:ring-2 focus:ring-primary outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">パスワード</label>
+                    <input type="password" id="loginPass" class="w-full border border-gray-300 px-3 py-2 rounded focus:ring-2 focus:ring-primary outline-none">
+                </div>
+                <button onclick="doLogin()" class="w-full bg-primary hover:bg-rose-800 text-white font-bold py-3 rounded-lg mt-2">
+                    ログイン
+                </button>
+                <button onclick="doAdminLogin()" class="w-full bg-white border border-slate-200 text-slate-500 font-bold py-2 rounded-lg mt-2 text-xs">
+                    法人管理者はこちら
+                </button>
+                <p class="text-xs text-center text-gray-400 mt-4 cursor-pointer hover:underline" onclick="goToScreen('lpScreen')">トップページに戻る</p>
+            </div>
+        </div>
+
+        <!-- 5. ダッシュボード -->
+        <div id="dashboardScreen" class="hidden container mx-auto max-w-4xl mt-10 p-4 fade-in">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">マイページ</h2>
+                <div class="text-sm text-gray-600">
+                    学習の進捗を確認しましょう
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-primary">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-4 md:mb-0">
+                        <span class="bg-rose-100 text-primary text-xs px-2 py-1 rounded font-bold">受講可能</span>
+                        <h3 class="text-xl font-bold mt-2">仕事と介護の両立検定 <span class="text-sm font-normal text-gray-500">ベーシック</span></h3>
+                        <p class="text-sm text-gray-500 mt-1">進捗: 未着手</p>
+                    </div>
+                    <button onclick="startLearning()" class="bg-secondary hover:bg-sky-600 text-white font-bold py-3 px-8 rounded-lg shadow transition transform hover:scale-105">
+                        受講を開始する <i class="fas fa-play-circle ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. 動画視聴画面 -->
+        <div id="videoScreen" class="hidden container mx-auto max-w-4xl mt-8 p-4 fade-in">
+            <div class="flex items-center justify-center mb-8">
+                <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold text-sm ring-4 ring-rose-100">1</div>
+                <span class="ml-2 font-bold text-primary">講義動画</span>
+                <div class="w-20 h-1 bg-slate-200 mx-4"></div>
+                <div class="w-8 h-8 bg-slate-300 text-white rounded-full flex items-center justify-center font-bold text-sm">2</div>
+                <span class="ml-2 font-bold text-slate-500">確認テスト</span>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <h2 class="text-xl font-bold mb-4 flex items-center text-slate-800">
+                    <span class="bg-secondary/10 text-secondary px-3 py-1 text-xs rounded-full font-bold mr-3 tracking-wider border border-secondary/20">VIDEO</span>
+                    仕事と介護の両立とは
+                </h2>
+                
+                <div class="video-responsive mb-2">
+                    <iframe 
+                        id="mainVideoFrame"
+                        src="https://drive.google.com/file/d/1wz-ni39sBGAePRKuRmVI2EZx1skSOJ7K/preview" 
+                        allow="autoplay; fullscreen"
+                        allowfullscreen>
+                    </iframe>
+                    <!-- 修正: 画面内（動画上）にポップアウトボタンを配置 -->
+                    <a href="https://drive.google.com/file/d/1wz-ni39sBGAePRKuRmVI2EZx1skSOJ7K/view" 
+                       target="_blank" 
+                       class="absolute top-2 right-2 bg-slate-900/70 hover:bg-slate-900/90 text-white p-2 rounded-lg transition z-10 flex items-center shadow-lg border border-white/20" 
+                       title="別ウィンドウで動画を開く">
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </div>
+                
+                <div class="text-right mb-6">
+                    <p class="text-[10px] text-slate-400">※動画が再生できない場合は右上のアイコンから別ウィンドウで開いてください</p>
+                </div>
+
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 text-center">
+                    <p class="text-slate-600 mb-6 font-medium">動画の視聴が終わったら、下のボタンを押してテストに進んでください。</p>
+                    <button type="button" onclick="proceedToTest()" class="w-full sm:w-auto bg-gradient-to-r from-primary to-rose-600 hover:from-rose-800 hover:to-rose-700 text-white font-bold py-4 px-12 rounded-full shadow-lg transition transform hover:-translate-y-1 flex items-center justify-center gap-2 mx-auto cursor-pointer">
+                        <span>視聴を完了してテストへ進む</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. テスト画面 -->
+        <div id="testScreen" class="hidden container mx-auto max-w-3xl mt-8 p-4 fade-in pb-24">
+            <div class="flex items-center justify-center mb-8">
+                <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold text-sm">1</div>
+                <span class="ml-2 font-bold text-primary">講義動画</span>
+                <div class="w-20 h-1 bg-primary mx-4"></div>
+                <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold text-sm ring-4 ring-rose-100">2</div>
+                <span class="ml-2 font-bold text-primary">確認テスト</span>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-xl overflow-hidden border border-slate-200">
+                <div class="bg-primary p-6 text-white flex justify-between items-center shadow-md">
+                    <h2 class="text-2xl font-bold flex items-center gap-2">
+                        <i class="fas fa-pen-fancy"></i> 確認テスト
+                    </h2>
+                    <div class="text-right hidden sm:block">
+                        <span id="questionCountDisplay" class="block text-4xl font-bold tracking-tight">5</span>
+                        <span class="text-[10px] uppercase tracking-widest opacity-80">Questions</span>
+                    </div>
+                </div>
+                
+                <div id="retryMessage" class="hidden bg-rose-50 text-rose-700 px-6 py-3 text-sm font-bold border-b border-rose-100 flex items-center">
+                    <i class="fas fa-exclamation-circle mr-2"></i> 間違えた問題のみ表示しています。全問正解を目指しましょう！
+                </div>
+
+                <div class="p-8 bg-slate-50">
+                    <div id="quizContainer" class="space-y-8"></div>
+                </div>
+
+                <div class="p-6 bg-white border-t border-slate-200 sticky bottom-0 z-10 shadow-lg">
+                    <button type="button" onclick="submitTest()" class="w-full sm:w-auto mx-auto block bg-gradient-to-r from-primary to-rose-600 hover:from-rose-800 hover:to-rose-700 text-white font-bold py-4 px-16 rounded-full shadow-lg transition transform hover:-translate-y-1 text-lg flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="fas fa-paper-plane"></i> 解答を送信して採点する
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. 結果画面 -->
+        <div id="resultScreen" class="hidden container mx-auto max-w-2xl mt-12 p-4 fade-in">
+            <div id="resultContent" class="bg-white rounded-2xl shadow-xl overflow-hidden text-center p-10 border border-slate-100"></div>
+        </div>
+
+        <!-- 9. 管理者画面 -->
+        <div id="adminScreen" class="hidden container mx-auto max-w-6xl mt-8 p-6 fade-in">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-6 border-b border-slate-200">
+                    <h2 class="text-2xl font-bold text-slate-800"><i class="fas fa-chart-line text-slate-500 mr-2"></i> 法人管理ダッシュボード</h2>
+                    <p class="text-sm text-slate-500 mt-1 ml-8">受講状況を一元管理（個人名非表示）</p>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-sky-50 p-6 rounded-xl border border-sky-100 shadow-sm">
+                            <p class="text-xs text-secondary font-bold uppercase tracking-wider mb-1">契約数 / 利用枠</p>
+                            <p class="text-3xl font-bold text-slate-800">10 <span class="text-base font-normal text-slate-500">名</span></p>
+                        </div>
+                        <div class="bg-emerald-50 p-6 rounded-xl border border-emerald-100 shadow-sm">
+                            <p class="text-xs text-emerald-600 font-bold uppercase tracking-wider mb-1">合格者数</p>
+                            <p class="text-3xl font-bold text-emerald-700">4 <span class="text-base font-normal text-slate-500">名</span></p>
+                        </div>
+                        <div class="bg-rose-50 p-6 rounded-xl border border-rose-100 shadow-sm">
+                            <p class="text-xs text-primary font-bold uppercase tracking-wider mb-1">未受講・対応必要</p>
+                            <p class="text-3xl font-bold text-primary">2 <span class="text-base font-normal text-slate-500">名</span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto rounded-lg border border-slate-200">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-xs font-bold text-slate-500 uppercase">
+                                    <th class="p-4 border-b">受講者ID</th>
+                                    <th class="p-4 border-b">ステータス</th>
+                                    <th class="p-4 border-b">最終アクセス</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm bg-white divide-y divide-slate-100">
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-4 font-bold text-slate-700 font-mono"><i class="fas fa-user text-slate-400 mr-2"></i> CW-2025-A01</td>
+                                    <td class="p-4"><span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-xs font-bold">合格</span></td>
+                                    <td class="p-4 text-slate-600">2025/12/29</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-4 font-bold text-slate-700 font-mono"><i class="fas fa-user text-slate-400 mr-2"></i> CW-2025-B24</td>
+                                    <td class="p-4"><span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-bold">再挑戦中</span></td>
+                                    <td class="p-4 text-slate-600">2025/12/30</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-slate-800 text-slate-300 text-center py-8 mt-12 text-xs">
+        <p>&copy; 2025 All Rights Reserved. ChangeWAVE Group,Inc.</p>
+    </footer>
+
+    <script>
+        /* データ */
+        let currentUser = { name: "", email: "" };
+        const allQuestions = [
+            { id: 1, q: "家族の介護についての考え方として、最も適切なのはどれですか。", options: ["今まさに介護している人だけに関係する話だと思う", "今は困っていなくても、将来関わる可能性があると思う", "介護職など限られた専門職だけが知っていればよいと思う"], a: 1 }, 
+            { id: 2, q: "周囲の人が介護や暮らしのことで困っているかもしれないと感じたとき、サポーターとして“最初の一歩”として望ましいのはどれですか。", options: ["自分の経験をもとに、すぐ具体的な介護方法をアドバイスする", "家族構成や収入など、詳しい事情を聞き出す", "心配していることがあれば話せる雰囲気をつくり、相談先の存在を伝える"], a: 2 }, 
+            { id: 3, q: "家族の介護や暮らしの困りごとを相談する「地域の入口」として、制度上位置づけられているのはどれですか。", options: ["地域包括支援センター", "ケアマネジャー", "病院の相談窓口"], a: 0 }, 
+            { id: 4, q: "介護と仕事などの両立を考えるときの「順番」として、最も望ましいのはどれですか。", options: ["今の介護状況に合わせて、仕事や生活を削っていく", "家族ができることをすべて出し合い、その範囲でやることを決める", "本人が今後どう暮らしたいかを聞き、その希望を前提に体制を考える"], a: 2 }, 
+            { id: 5, q: "ケアラーの負担を軽くする考え方として、最も適切なのはどれですか。", options: ["自分ができるだけ介護の実務を引き受ける", "自分は介護の「プレイヤー」ではなく、体制を整える「マネージャー」として動く", "短期間だけ集中して介護し、その後は施設に任せる前提で動く"], a: 1 }
+        ];
+        let currentQuestions = [];
+        let wrongQuestionIds = [];
+
+        /* 画面遷移システム */
+        const allScreens = ['lpScreen', 'registrationFlow', 'loginScreen', 'corporateFlow', 'dashboardScreen', 'videoScreen', 'testScreen', 'resultScreen', 'adminScreen'];
+
+        function goToScreen(screenId) {
+            allScreens.forEach(id => document.getElementById(id).classList.add('hidden'));
+            document.getElementById(screenId).classList.remove('hidden');
+            
+            // ヘッダー制御
+            const isPublic = ['lpScreen', 'loginScreen', 'registrationFlow', 'corporateFlow'].includes(screenId);
+            document.getElementById('authButtons').classList.toggle('hidden', !isPublic);
+            document.getElementById('userInfo').classList.toggle('hidden', isPublic);
+            
+            window.scrollTo(0, 0);
+        }
+
+        /* 認証・登録フロー */
+        function startIndividualFlow() {
+            currentUser.name = "テストユーザー";
+            goToScreen('registrationFlow');
+        }
+        function toPaymentStep() {
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const pass = document.getElementById('regPass').value;
+            if(!name || !email || !pass) { alert('すべての項目を入力してください'); return; }
+            currentUser.name = name;
+            currentUser.email = email;
+            document.getElementById('step1-account').classList.add('hidden');
+            document.getElementById('step2-payment').classList.remove('hidden');
+            document.getElementById('stepLabel2').classList.remove('text-gray-400');
+            document.getElementById('stepLabel2').classList.add('text-primary');
+        }
+        function backToAccount() {
+            document.getElementById('step2-payment').classList.add('hidden');
+            document.getElementById('step1-account').classList.remove('hidden');
+        }
+        function executePayment() {
+            document.getElementById('payBtnText').classList.add('hidden');
+            document.getElementById('paySpinner').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('step2-payment').classList.add('hidden');
+                document.getElementById('step3-complete').classList.remove('hidden');
+                document.getElementById('stepLabel3').classList.remove('text-gray-400');
+                document.getElementById('stepLabel3').classList.add('text-primary');
+                document.getElementById('issuedEmail').innerText = currentUser.email;
+            }, 1500);
+        }
+        function goToDashboardFromRegister() {
+            document.getElementById('userName').innerText = "CW-2025-U01";
+            goToScreen('dashboardScreen');
+        }
+        function doLogin() {
+            if(!document.getElementById('loginEmail').value) return alert('メールアドレスを入力してください');
+            currentUser.name = "CW-2025-U01";
+            document.getElementById('userName').innerText = currentUser.name;
+            goToScreen('dashboardScreen');
+        }
+        function doAdminLogin() {
+            document.getElementById('userName').innerText = "人事部 (管理者)";
+            goToScreen('adminScreen');
+        }
+        function logout() {
+            currentUser = {};
+            document.getElementById('loginEmail').value = "";
+            goToScreen('lpScreen');
+        }
+
+        /* 学習・テストロジック */
+        function startLearning() {
+            goToScreen('videoScreen');
+        }
+
+        // テスト画面への遷移
+        function proceedToTest() {
+            currentQuestions = [...allQuestions];
+            wrongQuestionIds = [];
+            goToScreen('testScreen');
+            document.getElementById('retryMessage').classList.add('hidden');
+            generateQuiz();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function generateQuiz() {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = '';
+            document.getElementById('questionCountDisplay').innerText = currentQuestions.length;
+
+            currentQuestions.forEach((item) => {
+                let optionsObj = item.options.map((opt, originalIndex) => {
+                    return { text: opt, originalIndex: originalIndex };
+                });
+                optionsObj = shuffleArray(optionsObj);
+
+                const html = `
+                    <div class="bg-white p-6 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition group">
+                        <p class="font-bold mb-4 text-lg text-slate-800 flex items-start">
+                            <span class="bg-secondary text-white px-3 py-1 rounded text-sm mr-3 flex-shrink-0 mt-0.5 shadow-sm font-mono">Q.${item.id}</span> 
+                            ${item.q}
+                        </p>
+                        <div class="space-y-3 pl-2 md:pl-12">
+                            ${optionsObj.map((optObj) => `
+                                <label class="flex items-center space-x-3 cursor-pointer p-3 rounded-lg border border-transparent hover:bg-sky-50 hover:border-sky-100 transition">
+                                    <div class="relative flex items-center justify-center">
+                                        <input type="radio" name="q_${item.id}" value="${optObj.originalIndex}" class="peer h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 checked:border-secondary transition-all checked:bg-secondary">
+                                        <div class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100">
+                                            <i class="fas fa-check text-[10px]"></i>
+                                        </div>
+                                    </div>
+                                    <span class="text-slate-600 peer-checked:text-slate-900 peer-checked:font-medium">${optObj.text}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+        }
+
+        function submitTest() {
+            let currentWrongIds = [];
+            let allAnswered = true;
+
+            for(let i=0; i<currentQuestions.length; i++){
+                const qId = currentQuestions[i].id;
+                const radios = document.getElementsByName(`q_${qId}`);
+                let checked = false;
+                for(const r of radios) if(r.checked) checked = true;
+                if(!checked) allAnswered = false;
+            }
+
+            if(!allAnswered) {
+                alert("未回答の問題があります。");
+                return;
+            }
+
+            currentQuestions.forEach((item) => {
+                const radios = document.getElementsByName(`q_${item.id}`);
+                let val = null;
+                for (const r of radios) {
+                    if (r.checked) val = parseInt(r.value);
+                }
+                if (val !== item.a) {
+                    currentWrongIds.push(item.id);
+                }
+            });
+
+            const resultDiv = document.getElementById('resultContent');
+            goToScreen('resultScreen');
+
+            if (currentWrongIds.length === 0) {
+                resultDiv.parentElement.className = "container mx-auto max-w-2xl mt-12 p-4 fade-in";
+                resultDiv.className = "bg-white rounded-2xl shadow-xl overflow-hidden text-center p-0 border-t-8 border-emerald-500";
+                resultDiv.innerHTML = `
+                    <div class="p-10">
+                        <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 text-emerald-600 animate-bounce">
+                            <i class="fas fa-trophy text-3xl"></i>
+                        </div>
+                        <h2 class="text-3xl font-bold mb-2 text-slate-800">合格！</h2>
+                        <p class="text-slate-500 mb-8">おめでとうございます。全問正解です。</p>
+                        
+                        <div class="bg-[#fffbf0] p-8 rounded-lg mb-8 border-4 border-double border-[#e6c985] relative mx-auto max-w-sm shadow-md text-left">
+                            <div class="text-center mb-6">
+                                <h3 class="font-serif text-2xl text-[#8a6d3b] tracking-widest border-b border-[#e6c985] pb-2 inline-block">CERTIFICATE</h3>
+                            </div>
+                            <p class="font-bold text-xl text-center text-slate-800 mb-4 font-serif border-b border-gray-300 pb-2 mx-4">${currentUser.name || '受講者'} 殿</p>
+                            <p class="text-xs text-center text-slate-600 mb-4 leading-relaxed">
+                                Work and Care Balance Certification<br>Successfully Completed.
+                            </p>
+                            <div class="text-center">
+                                <span class="text-rose-500 font-bold text-lg border-2 border-rose-400 rounded-full px-4 py-1 transform -rotate-6 inline-block">PASS</span>
+                            </div>
+                        </div>
+                        
+                        <button onclick="goToScreen('dashboardScreen')" class="bg-slate-800 text-white px-8 py-3 rounded-full shadow hover:bg-slate-900 transition">
+                            マイページへ戻る
+                        </button>
+                    </div>
+                `;
+            } else {
+                wrongQuestionIds = currentWrongIds;
+                resultDiv.className = "bg-white rounded-2xl shadow-xl overflow-hidden text-center p-10 border-t-8 border-primary";
+                resultDiv.innerHTML = `
+                    <div class="w-20 h-20 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-6 text-primary">
+                        <i class="fas fa-times text-4xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold mb-2 text-slate-800">不合格...</h2>
+                    <p class="text-slate-500 mb-6">合格には100点満点が必要です。</p>
+                    <div class="bg-rose-50 text-rose-800 p-4 rounded-lg mb-8 text-sm border border-rose-100">
+                        <p>間違えた問題のみ再出題します。<br>諦めずに挑戦しましょう！</p>
+                    </div>
+                    <button onclick="retryTest()" class="w-full bg-primary hover:bg-rose-800 text-white font-bold py-3 rounded-lg shadow transition">
+                        間違えた問題に再挑戦
+                    </button>
+                `;
+            }
+        }
+
+        function retryTest() {
+            currentQuestions = allQuestions.filter(q => wrongQuestionIds.includes(q.id));
+            goToScreen('testScreen');
+            document.getElementById('retryMessage').classList.remove('hidden');
+            generateQuiz();
+        }
+    </script>
+</body>
+</html>
